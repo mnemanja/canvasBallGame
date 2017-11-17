@@ -1,13 +1,11 @@
 const c = document.getElementById('canvas');
 const ctx = c.getContext('2d');
 
+c.width = window.innerWidth - 50;
+c.height = window.innerHeight;
+
 let mouseX;
 let mouseY;
-
-function map(value, minSrc, maxSrc, minDst, maxDst) {
-  return (value - minSrc) / (maxSrc - minSrc) * (maxDst - minDst) + minDst;
-}
-
 
 c.addEventListener('mousemove', function (event) {
   const rect = c.getBoundingClientRect();
@@ -21,19 +19,34 @@ function genElement(color, leftPos, topPos, handleWidth, handleHeight) {
   ctx.fillRect(leftPos, topPos, handleWidth, handleHeight);
 }
 
+function generateDestructibleBlocks(amount, row, color) {
+  let i = 0;
 
-function drawEverything(leftPos, topPos, handleWidth, handleHeight) {
-  genElement('black', 0, 0, c.width, c.height);
-  genElement('yellow', leftPos, topPos, handleWidth, handleHeight);
+  for (; i < amount; i++) {
+    const width = c.width / 16.5;
+    const height = 10;
+    const spacing = 10;
+
+    genElement(color, width * (i + 0.6) * 1.5, spacing * (row * 3), width, height);
+  }
 }
 
-function render() {
+function drawEverything() {
+  genElement('black', 0, 0, c.width, c.height);
+
+  generateDestructibleBlocks(10, 1, 'orange');
+  generateDestructibleBlocks(8, 2, 'pink');
+
   const leftPos = (mouseX || c.width / 2) - 50;
   const topPos = c.height - 21;
   const handleWidth = 100;
   const handleHeight = 20;
 
-  drawEverything(leftPos, topPos, handleWidth, handleHeight);
+  genElement('yellow', leftPos, topPos, handleWidth, handleHeight);
+}
+
+function render() {
+  drawEverything();
   requestAnimationFrame(render);
 }
 requestAnimationFrame(render);
